@@ -38,3 +38,7 @@ Inside the frontend folder run commands on cmd
 
 - Run the project
 `npm run dev`
+
+## APP
+![image](https://github.com/user-attachments/assets/56f5ac45-ea45-44f1-af41-b4b000f9db94)
+
