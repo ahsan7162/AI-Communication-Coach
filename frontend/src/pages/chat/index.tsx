@@ -12,6 +12,7 @@ import {
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import { FaSignOutAlt } from "react-icons/fa"; // Import logout icon
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const ChatPage = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [messagesLoading, setMessagesLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
@@ -64,12 +66,15 @@ const ChatPage = () => {
   const handleChatSelect = async (chat: Chat) => {
     setActiveChat(chat);
     try {
-        await startChat(chat.id);
+      setMessagesLoading(true);
+      await startChat(chat.id);
       const messages = await fetchMessagesByChatId(chat.id);
       setMessages(messages);
     } catch (error) {
       setMessages([]);
       console.error("Failed to fetch messages:", error);
+    } finally {
+      setMessagesLoading(false);
     }
   };
 
@@ -99,15 +104,29 @@ const ChatPage = () => {
   };
 
   const handleCreateChat = async () => {
-    const newChat = await createChat("New Chat");
-    newChat.avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${newChat.id}`;
-    setChats([newChat, ...chats]);
-    setActiveChat(newChat);
-    await startChat(newChat.id);
-    const message = await createMessage(newChat.id, "Hello, how can I help you with english communication?");
-    setMessages([message]);
+    try {
+      setMessagesLoading(true);
+      const newChat = await createChat("New Chat");
+      newChat.avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${newChat.id}`;
+      setChats([newChat, ...chats]);
+      setActiveChat(newChat);
+      await startChat(newChat.id);
+      const message = await createMessage(
+      newChat.id,
+        "Hello, I'm your communication coach. How can I assist you?"
+      );
+      setMessages([message]);
+    } catch (error) {
+      console.error("Failed to create chat:", error);
+    } finally {
+      setMessagesLoading(false);
+    }
   };
-
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+  
   if (!localStorage.getItem("token")) {
     navigate("/");
   }
@@ -124,7 +143,7 @@ const ChatPage = () => {
       {/* Sidebar for Chat List */}
       <div className="chat-sidebar">
         <div className="sidebar-header">
-          <h2 style={{ padding: 0, margin: 0 }}>AI Communication Coach</h2>
+          <h2 style={{ padding: 0, margin: 0 }}>Chats</h2>
           <button
             className="new-chat-btn"
             onClick={() => {
@@ -170,21 +189,29 @@ const ChatPage = () => {
       {/* Main Chat Window */}
       {activeChat ? (
         <div className="chat-window">
-          <div className="chat-header">
-            <img
+          <div className="chat-header-container">
+            <div className="chat-header">
+              <img
               src={activeChat.avatar}
               alt={activeChat.chat_name}
               className="chat-avatar"
             />
-            <h2>{activeChat.chat_name}</h2>
+              <h2>{activeChat.chat_name}</h2>
+            </div>
+            <button className="logout-btn" onClick={handleLogout} title="Logout">
+              <FaSignOutAlt size={20} />
+            </button>
           </div>
-
           <div className="chat-messages">
-            {messages.map((msg: Message, index) => (
-              <div key={index} className={`chat-bubble ${msg.message_type}`}>
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
-              </div>
-            ))}
+            {messagesLoading ? (
+              <div className="loading-messages">Loading messages...</div>
+            ) : (
+              messages.map((msg: Message, index) => (
+                <div key={index} className={`chat-bubble ${msg.message_type}`}>
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                </div>
+              ))
+            )}
             <div ref={messagesEndRef} />
           </div>
 
@@ -196,12 +223,15 @@ const ChatPage = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               style={{ borderRadius: "10px" }}
-              disabled={sending}
+              disabled={sending || messagesLoading}
             />
             <button
               type="submit"
-              style={{ marginLeft: "10px" }}
-              disabled={sending}
+              style={{
+                marginLeft: "10px",
+                cursor: sending || messagesLoading ? "not-allowed" : "pointer",
+              }}
+              disabled={sending || messagesLoading}
             >
               {sending ? "Sending..." : "Send"}
             </button>

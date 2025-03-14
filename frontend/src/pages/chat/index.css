@@ -88,6 +88,7 @@
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   padding: 20px;
+  padding-bottom: 0px;
 }
 
 /* Chat Header */
@@ -95,8 +96,14 @@
   display: flex;
   align-items: center;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
+}
+
+.chat-header-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .chat-header img {
@@ -274,4 +281,42 @@
 
 .new-chat-btn:hover .plus-icon {
   transform: rotate(180deg);
+}
+
+.no-chat-selected {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  color: white;
+}
+
+.loading-messages {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  animation: pulse 1.5s ease-in-out infinite;
+  color: white;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.logout-btn{
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  margin-left: 10px;
 }
