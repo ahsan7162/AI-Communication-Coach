@@ -1,0 +1,8 @@
+fastapi
+sqlalchemy 
+pyodbc 
+pymssql  
+passlib[bcrypt]
+pyjwt
+google-generativeai
+uvicorn
