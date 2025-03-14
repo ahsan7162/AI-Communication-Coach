@@ -1,5 +1,7 @@
 # AI Communication Coach
 AI Communication Coach is a Gemini-powered chat app designed to help users improve their English communication skills.
+![AI Coach Workflow](https://github.com/user-attachments/assets/3ddaf557-6982-4e5b-a64e-d43b3953762a)
+
 
 
 ## Tech Stack
