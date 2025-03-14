@@ -7,7 +7,7 @@ from models.enums import MessageTypeEnum
 
 # Configuration (SQLite Database File)
 DB_NAME = os.getenv("DB_NAME", "aicoach.db")
-DATABASE_URL = f"sqlite:///./{DB_NAME}"
+DATABASE_URL = f"sqlite:////var/lib/sqlite/mydatabase.db{DB_NAME}"
 
 # Database Engine
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
