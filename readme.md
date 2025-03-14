@@ -7,8 +7,9 @@ AI Communication Coach is a Gemini-powered chat app designed to help users impro
 ## Tech Stack
 1) FastAPI (Python)
 2) React.js (Frontend)
-3) SqlAlchemy (ORM)
-4) Gemini (LLM)
+3) SqlLite (Database)
+4) SqlAlchemy (ORM)
+5) Gemini (LLM)
 
 ## Project Setup
 - Make sure to install SqlLite, node.js and python on your system before setting up the project  
